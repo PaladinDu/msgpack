@@ -294,6 +294,9 @@ func init() {
 
 func inlineFields(fs *fields, typ reflect.Type, f *field, tag string) {
 	inlinedFs := getFields(typ, tag)
+	if inlinedFs.useIndex {
+		fs.useIndex = true
+	}
 	for i, field := range inlinedFs.List {
 		if field == nil {
 			continue
@@ -338,6 +341,9 @@ func shouldInline(fs *fields, typ reflect.Type, f *field, tag string) bool {
 	}
 
 	inlinedFs := getFields(typ, tag)
+	if inlinedFs.useIndex {
+		fs.useIndex = true
+	}
 	for _, field := range inlinedFs.List {
 		if field == nil {
 			continue

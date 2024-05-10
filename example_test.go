@@ -182,21 +182,24 @@ func ExampleMarshal_inline() {
 		Bar string
 		V3  string `msgpack:"index:5"`
 	}
-	var buf bytes.Buffer
-	enc := msgpack.NewEncoder(&buf)
-	err := enc.Encode(&Item{Base: Base{ID: 1, StrID: "ID1"}, Foo: "foo", Bar: "bar", V3: "v3"})
+	type Item2 struct {
+		Base
+	}
+	data, err := msgpack.Marshal(&Item{Base: Base{ID: 1, StrID: "ID1"}, Foo: "foo", Bar: "bar", V3: "v3"})
 	if err != nil {
 		panic(err)
 	}
-
-	dec := msgpack.NewDecoder(&buf)
 	var v any
-	err = dec.Decode(&v)
+	err = msgpack.Unmarshal(data, &v)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("%v", v)
+	fmt.Printf("%v\n", v)
+	item2 := &Item2{}
+	err = msgpack.Unmarshal(data, item2)
+	fmt.Println(item2)
 	// Output: [<nil> ID1 1 foo bar v3]
+	//&{{1 ID1}}
 }
 
 func ExampleMarshal_indexLess() {
