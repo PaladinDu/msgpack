@@ -341,6 +341,9 @@ func decodeStructValue(d *Decoder, v reflect.Value) error {
 	}
 
 	for i, f := range fields.List {
+		if i >= n {
+			return nil
+		}
 		//Read and discard that nil field
 		if f == nil {
 			if err = d.Skip(); err != nil {
@@ -348,9 +351,7 @@ func decodeStructValue(d *Decoder, v reflect.Value) error {
 			}
 			continue
 		}
-		if i >= n {
-			return nil
-		}
+
 		if err := f.DecodeValue(d, v); err != nil {
 			return err
 		}

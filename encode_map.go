@@ -189,7 +189,7 @@ func (e *Encoder) EncodeMapLen(l int) error {
 
 func encodeStructValue(e *Encoder, strct reflect.Value) error {
 	structFields := structs.Fields(strct.Type(), e.structTag)
-	if e.flags&arrayEncodedStructsFlag != 0 || structFields.AsArray {
+	if e.flags&arrayEncodedStructsFlag != 0 || structFields.AsArray || structFields.useIndex {
 		return encodeStructValueAsArray(e, strct, structFields.List)
 	}
 	fields := structFields.OmitEmpty(e, strct)

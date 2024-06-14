@@ -46,6 +46,10 @@ var (
 // CustomEncoder/CustomDecoder or Marshaler/Unmarshaler interfaces.
 func Register(value interface{}, enc encoderFunc, dec decoderFunc) {
 	typ := reflect.TypeOf(value)
+	RegisterByTyp(typ, enc, dec)
+}
+
+func RegisterByTyp(typ reflect.Type, enc encoderFunc, dec decoderFunc) {
 	if enc != nil {
 		typeEncMap.Store(typ, enc)
 	}
@@ -292,6 +296,9 @@ func init() {
 
 func inlineFields(fs *fields, typ reflect.Type, f *field, tag string) {
 	inlinedFs := getFields(typ, tag)
+	if inlinedFs.useIndex {
+		fs.useIndex = true
+	}
 	for i, field := range inlinedFs.List {
 		if field == nil {
 			continue
@@ -336,6 +343,9 @@ func shouldInline(fs *fields, typ reflect.Type, f *field, tag string) bool {
 	}
 
 	inlinedFs := getFields(typ, tag)
+	if inlinedFs.useIndex {
+		fs.useIndex = true
+	}
 	for _, field := range inlinedFs.List {
 		if field == nil {
 			continue

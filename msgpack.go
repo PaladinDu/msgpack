@@ -65,3 +65,16 @@ func StructToAnyStruct(obj any) (any, error) {
 	}
 	return data, nil
 }
+
+func CopyAnyT[T any](src T) (T, error) {
+	var v T
+	srcData, err := Marshal(src)
+	if err != nil {
+		return v, err
+	}
+	err = Unmarshal(srcData, &v)
+	if err != nil {
+		return v, err
+	}
+	return v, nil
+}
